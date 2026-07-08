@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cálculo Integral · El cuaderno del área bajo la curva</title>
+<meta name="description" content="Curso visual e interactivo de Cálculo Integral: integrales, sustitución, por partes, trigonométricas, fracciones parciales, área y volumen, longitud de curva y cinemática.">
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,500&family=Source+Sans+3:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- KaTeX -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- Grain / grid overlay -->
+<div class="blueprint-grid" aria-hidden="true"></div>
+
+<!-- NAV -->
+<header class="topbar">
+  <div class="topbar__inner">
+    <a href="#inicio" class="brand">
+      <span class="brand__mark">∫</span>
+      <span class="brand__text">Cálculo&nbsp;Integral</span>
+    </a>
+    <nav class="topnav" id="topnav">
+      <a href="#parcial1" data-nav>Parcial 1</a>
+      <a href="#parcial2" data-nav>Parcial 2</a>
+      <a href="#calculadora" data-nav>Calculadora</a>
+    </nav>
+    <button class="menu-btn" id="menuBtn" aria-label="Abrir menú" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- Side progress dots (desktop) -->
+<nav class="side-dots" id="sideDots" aria-label="Progreso en la página"></nav>
+
+<main>
+
+<!-- HERO -->
+<section class="hero" id="inicio">
+  <div class="hero__text">
+    <p class="eyebrow">Un cuaderno de campo para</p>
+    <h1 class="hero__title">El área<br>bajo la curva<span class="dot">.</span></h1>
+    <p class="hero__sub">Cálculo Integral, dibujado en vivo: cada tema con su explicación, su fórmula, su ejemplo resuelto, su video y — al final — una calculadora que integra por ti.</p>
+    <div class="hero__cta">
+      <a href="#riemann" class="btn btn--primary">Empezar por el principio</a>
+      <a href="#calculadora" class="btn btn--ghost">Ir a la calculadora</a>
+    </div>
+  </div>
+  <div class="hero__art">
+    <svg id="heroSvg" viewBox="0 0 560 460" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <!-- axes -->
+      <line x1="50" y1="400" x2="530" y2="400" class="axis"/>
+      <line x1="50" y1="400" x2="50" y2="30" class="axis"/>
+      <g id="heroRects"></g>
+      <path id="heroCurve" class="curve-path" fill="none" stroke-width="4" d=""/>
+      <text x="50" y="425" class="axis-label">0</text>
+      <text x="510" y="425" class="axis-label">x</text>
+      <text x="28" y="40" class="axis-label">y</text>
+    </svg>
+    <p class="hero__caption">n rectángulos → ∞ &nbsp;⟶&nbsp; el área exacta</p>
+  </div>
+  <a href="#riemann" class="scroll-cue" aria-label="Bajar">
+    <span></span>
+  </a>
+</section>
+
+<!-- INTRO: ¿Qué es una integral? + Riemann interactive -->
+<section class="topic topic--dark" id="riemann">
+  <div class="topic__inner">
+    <p class="eyebrow">Antes de empezar</p>
+    <h2 class="topic__title">¿Qué es una integral, en realidad?</h2>
+    <div class="topic__grid">
+      <div class="topic__text">
+        <p>Una integral responde una pregunta muy física: <em>¿cuánta área hay atrapada entre una curva y el eje x?</em> Cuando la región tiene lados rectos, basta con geometría. Cuando el borde es una curva, necesitamos otra herramienta: llenar la región con rectángulos delgaditos, sumar sus áreas, y luego preguntar qué pasa cuando esos rectángulos se vuelven infinitamente delgados.</p>
+        <p>Esa suma tiene nombre propio: <strong>suma de Riemann</strong>. Y su límite, cuando el número de rectángulos <span class="math">n</span> tiende a infinito, es justamente la integral definida:</p>
+        <div class="formula-card">
+          $$\int_a^b f(x)\,dx = \lim_{n\to\infty}\sum_{i=1}^{n} f(x_i^*)\,\Delta x$$
+        </div>
+        <p>La <strong>integral indefinida</strong>, en cambio, no calcula un área concreta sino que responde la pregunta inversa a la derivada: <em>¿de qué función vengo?</em> Por eso siempre carga una constante <span class="math">C</span>, la memoria de que muchas curvas comparten la misma pendiente.</p>
+        <div class="formula-card formula-card--accent">
+          $$\int f(x)\,dx = F(x) + C \quad \text{donde} \quad F'(x) = f(x)$$
+        </div>
+      </div>
+      <div class="topic__demo">
+        <div class="demo-card">
+          <div class="demo-card__head">
+            <span class="demo-card__label">Laboratorio</span>
+            <h3>Mueve el deslizador y observa</h3>
+          </div>
+          <canvas id="riemannCanvas" width="520" height="320" aria-label="Gráfico de suma de Riemann interactiva"></canvas>
+          <div class="demo-controls">
+            <label for="nSlider">Rectángulos: <span id="nValue">6</span></label>
+            <input type="range" id="nSlider" min="1" max="80" value="6">
+            <div class="demo-readout">
+              <div><span class="ro-label">Suma de Riemann</span><span class="ro-value" id="riemannSum">—</span></div>
+              <div><span class="ro-label">Valor exacto</span><span class="ro-value" id="exactValue">—</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="video-block">
+      <div class="video-block__text">
+        <span class="video-block__tag">▸ Video</span>
+        <h4>Sumas de Riemann, paso a paso</h4>
+        <p>Si el concepto todavía se siente resbaloso, este video lo resuelve con ejemplos numéricos concretos.</p>
+      </div>
+      <div class="video-wrap">
+        <iframe src="https://www.youtube.com/embed/ZSjzuFpBoCo" title="Suma de Riemann, paso a paso" loading="lazy" allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PARCIAL 1 DIVIDER -->
+<section class="divider" id="parcial1">
+  <div class="divider__inner">
+    <span class="divider__num">01</span>
+    <h2>Parcial 1</h2>
+    <p>Los métodos con los que aprendemos a integrar: sustitución, por partes y trigonométricas.</p>
+  </div>
+</section>
+
+<!-- INTEGRALES (fundamentos) -->
+<section class="topic" id="integrales">
+  <div class="topic__inner">
+    <p class="eyebrow">Parcial 1 · Fundamentos</p>
+    <h2 class="topic__title">Integrales</h2>
+    <div class="topic__grid">
+      <div class="topic__text">
+        <p>Toda integral parte de una tabla de referencia: las antiderivadas de las funciones elementales. Aprenderlas de memoria no es el objetivo — reconocer <em>cuándo</em> usarlas sí lo es.</p>
+        <table class="ref-table">
+          <tbody>
+            <tr><td>$$\int x^n\,dx = \dfrac{x^{n+1}}{n+1}+C\ (n\neq -1)$$</td></tr>
+            <tr><td>$$\int \dfrac{1}{x}\,dx = \ln|x|+C$$</td></tr>
+            <tr><td>$$\int e^x\,dx = e^x + C$$</td></tr>
+            <tr><td>$$\int \sin x\,dx = -\cos x + C \qquad \int \cos x\,dx = \sin x + C$$</td></tr>
+            <tr><td>$$\int \sec^2 x\,dx = \tan x + C$$</td></tr>
+          </tbody>
+        </table>
+        <p>Cada antiderivada representa, en realidad, a toda una <strong>familia de curvas</strong>: cambiar el valor de <span class="math">C</span> desliza la misma forma hacia arriba o hacia abajo, sin alterar su pendiente en ningún punto. Esa es la ilustración de la derecha.</p>
+      </div>
+      <div class="topic__art">
+        <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+          <line x1="20" y1="150" x2="380" y2="150" class="axis-thin"/>
+          <line x1="200" y1="20" x2="200" y2="280" class="axis-thin"/>
+          <g id="familyCurves"></g>
+        </svg>
+        <p class="art-caption">Misma derivada, distinta constante <span class="math">C</span>: una familia infinita de antiderivadas.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CAMBIO DE VARIABLE -->
+<section class="topic topic--dark" id="sustitucion">
+  <div class="topic__inner">
+    <p class="eyebrow">Parcial 1 · Método 1</p>
+    <h2 class="topic__title">Cambio de variable (sustitución)</h2>
+    <div class="topic__grid">
+      <div class="topic__text">
+        <p>La sustitución es la versión integral de la <strong>regla de la cadena</strong>, usada al revés. Si dentro de la integral hay una función y, muy cerca, aparece también su derivada (multiplicada por una constante), puedes "esconder" toda esa complejidad detrás de una sola letra: <span class="math">u</span>.</p>
+        <ol class="steps">
+          <li>Identifica una parte de la expresión y llámala <span class="math">u = g(x)</span>.</li>
+          <li>Deriva: <span class="math">du = g'(x)\,dx</span>, y despeja <span class="math">dx</span>.</li>
+          <li>Sustituye todo en términos de <span class="math">u</span> — no debe quedar ninguna <span class="math">x</span> suelta.</li>
+          <li>Integra la expresión, ya simplificada, respecto a <span class="math">u</span>.</li>
+          <li>Devuelve el cambio: reemplaza <span class="math">u</span> por <span class="math">g(x)</span> otra vez.</li>
+        </ol>
+        <div class="formula-card">
+          $$\int f(g(x))\,g'(x)\,dx = \int f(u)\,du = F(u)+C = F(g(x))+C$$
+        </div>
+        <p class="example-tag">Ejemplo resuelto</p>
+        <div class="formula-card formula-card--accent">
+          $$\int 2x\,\cos(x^2)\,dx \;\xrightarrow{u=x^2,\ du=2x\,dx}\; \int \cos u\,du = \sin u + C = \sin(x^2)+C$$
+        </div>
+      </div>
+      <div class="topic__art">
+        <svg viewBox="0 0 380 260" xmlns="http://www.w3.org/2000/svg">
+          <rect x="20" y="30" width="150" height="60" rx="10" class="box box--amber"/>
+          <text x="95" y="65" text-anchor="middle" class="box-label">f(g(x))·g'(x)dx</text>
+          <path d="M170 60 H260" class="arrow-line"/>
+          <polygon points="260,54 276,60 260,66" class="arrow-head"/>
+          <rect x="210" y="120" width="150" height="60" rx="10" class="box box--teal"/>
+          <text x="285" y="155" text-anchor="middle" class="box-label">f(u)du</text>
+          <path d="M170 90 Q170 120 210 140" class="arrow-line" fill="none"/>
+          <polygon points="205,132 214,142 202,148" class="arrow-head"/>
+          <rect x="20" y="200" width="150" height="50" rx="10" class="box box--coral"/>
+          <text x="95" y="230" text-anchor="middle" class="box-label">F(g(x)) + C</text>
+          <path d="M260 180 Q260 220 170 225" class="arrow-line" fill="none"/>
+          <polygon points="180,218 168,224 180,232" class="arrow-head"/>
+        </svg>
+        <p class="art-caption">Sustituir, integrar, y devolver el cambio.</p>
+      </div>
+    </div>
+    <div class="video-block">
+      <div class="video-block__text">
+        <span class="video-block__tag">▸ Video</span>
+        <h4>Integración por sustitución, resuelta</h4>
+        <p>Un ejercicio completo, con la identificación de <span class="math">u</span> explicada en detalle.</p>
+      </div>
+      <div class="video-wrap">
+        <iframe src="https://www.youtube.com/embed/evQWBkUIzV0" title="Integración por sustitución" loading="lazy" allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- POR PARTES -->
+<section class="topic" id="partes">
+  <div class="topic__inner">
+    <p class="eyebrow">Parcial 1 · Método 2</p>
+    <h2 class="topic__title">Integración por partes</h2>
+    <div class="topic__grid">
+      <div class="topic__text">
+        <p>Cuando el integrando es un <strong>producto</strong> de dos funciones de naturaleza distinta —un polinomio junto a una exponencial, un logaritmo junto a x— la sustitución no alcanza. Ahí entra la fórmula que viene directo de la regla del producto para derivadas:</p>
+        <div class="formula-card">
+          $$\int u\,dv = uv - \int v\,du$$
+        </div>
+        <p>El reto real no es la fórmula, es <strong>elegir bien quién es <span class="math">u</span></strong>. La guía clásica es el acrónimo <strong>ILATE</strong> — Inversa trigonométrica, Logarítmica, Algebraica, Trigonométrica, Exponencial — en ese orden de prioridad para escoger <span class="math">u</span> (lo que queda es <span class="math">dv</span>).</p>
+        <p class="example-tag">Ejemplo resuelto</p>
+        <div class="formula-card formula-card--accent">
+          $$\int x\,e^x\,dx,\quad u=x,\ dv=e^x dx \;\Rightarrow\; du=dx,\ v=e^x$$
+          $$\int x e^x dx = xe^x - \int e^x dx = xe^x - e^x + C$$
+        </div>
+      </div>
+      <div class="topic__art">
+        <svg viewBox="0 0 380 220" xmlns="http://www.w3.org/2000/svg">
+          <text x="20" y="40" class="ilate-letter">I</text><text x="60" y="40" class="ilate-word">nversa trig.</text>
+          <text x="20" y="80" class="ilate-letter">L</text><text x="60" y="80" class="ilate-word">ogarítmica</text>
+          <text x="20" y="120" class="ilate-letter">A</text><text x="60" y="120" class="ilate-word">lgebraica</text>
+          <text x="20" y="160" class="ilate-letter">T</text><text x="60" y="160" class="ilate-word">rigonométrica</text>
+          <text x="20" y="200" class="ilate-letter">E</text><text x="60" y="200" class="ilate-word">xponencial</text>
+          <line x1="10" y1="15" x2="10" y2="205" class="ilate-bar"/>
+        </svg>
+        <p class="art-caption">ILATE: prioridad para elegir a <span class="math">u</span>, de arriba hacia abajo.</p>
+      </div>
+    </div>
+    <div class="video-block">
+      <div class="video-block__text">
+        <span class="video-block__tag">▸ Video</span>
+        <h4>Integración por partes, ejercicio resuelto</h4>
+        <p>Explicación completa del método, incluyendo cómo elegir <span class="math">u</span> y <span class="math">dv</span>.</p>
+      </div>
+      <div class="video-wrap">
+        <iframe src="https://www.youtube.com/embed/_T7AE2KEaJY" title="Integración por partes" loading="lazy" allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRIGONOMETRICAS -->
+<section class="topic topic--dark" id="trigonometricas">
+  <div class="topic__inner">
+    <p class="eyebrow">Parcial 1 · Método 3</p>
+    <h2 class="topic__title">Integrales trigonométricas</h2>
+    <div class="topic__grid">
+      <div class="topic__text">
+        <p>Aquí el truco no es un método nuevo, sino <strong>identidades trigonométricas</strong> usadas para reescribir el integrando en una forma que sí sabemos integrar. Las combinaciones más comunes con <span class="math">\sin</span> y <span class="math">\cos</span>:</p>
+        <ul class="case-list">
+          <li><strong>Potencias impares de seno o coseno:</strong> se separa un factor y se usa <span class="math">\sin^2x+\cos^2x=1</span>.</li>
+          <li><strong>Potencias pares de ambos:</strong> se usan las identidades de ángulo mitad: <span class="math">\sin^2x=\tfrac{1-\cos2x}{2}</span>, <span class="math">\cos^2x=\tfrac{1+\cos2x}{2}</span>.</li>
+          <li><strong>Combinaciones con <span class="math">\tan</span> y <span class="math">\sec</span>:</strong> se usa <span class="math">\tan^2x+1=\sec^2x</span>.</li>
+        </ul>
+        <p class="example-tag">Ejemplo resuelto</p>
+        <div class="formula-card formula-card--accent">
+          $$\int \sin^2 x\,dx = \int \frac{1-\cos 2x}{2}\,dx = \frac{x}{2} - \frac{\sin 2x}{4} + C$$
+        </div>
+      </div>
+      <div class="topic__art">
+        <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="150" cy="150" r="110" class="circle-outline"/>
+          <line x1="30" y1="150" x2="270" y2="150" class="axis-thin"/>
+          <line x1="150" y1="30" x2="150" y2="270" class="axis-thin"/>
+          <line id="unitRadius" x1="150" y1="150" x2="228" y2="97" class="radius-line"/>
+          <line id="sinLine" x1="228" y1="150" x2="228" y2="97" class="sin-line"/>
+          <line id="cosLine" x1="150" y1="150" x2="228" y2="150" class="cos-line"/>
+          <circle id="unitDot" cx="228" cy="97" r="6" class="unit-dot"/>
+          <text x="235" y="122" class="axis-label small">sin θ</text>
+          <text x="185" y="168" class="axis-label small">cos θ</text>
+        </svg>
+        <p class="art-caption">El círculo unitario: origen de todas las identidades trigonométricas.</p>
+      </div>
+    </div>
+    <div class="video-block">
+      <div class="video-block__text">
+        <span class="video-block__tag">▸ Video</span>
+        <h4>Integrales trigonométricas resueltas</h4>
+        <p>Cómo aplicar la identidad de ángulo doble para resolver <span class="math">\int \sin^2 x\,dx</span>.</p>
+      </div>
+      <div class="video-wrap">
+        <iframe src="https://www.youtube.com/embed/Q9ru6AuREaw" title="Integrales trigonométricas" loading="lazy" allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PARCIAL 2 DIVIDER -->
+<section class="divider divider--alt" id="parcial2">
+  <div class="divider__inner">
+    <span class="divider__num">02</span>
+    <h2>Parcial 2</h2>
+    <p>Las aplicaciones: fracciones parciales, área, volumen, longitud de curva y cinemática.</p>
+  </div>
+</section>
+
+<!-- FRACCIONES PARCIALES -->
+<section class="topic" id="fracciones">
+  <div class="topic__inner">
+    <p class="eyebrow">Parcial 2 · Funciones racionales</p>
+    <h2 class="topic__title">Fracciones parciales</h2>
+    <div class="topic__text topic__text--wide">
+      <p>Cuando el integrando es una fracción entre dos polinomios y el de arriba tiene menor grado que el de abajo, conviene <strong>partir la fracción grande en fracciones más pequeñas</strong>, cada una fácil de integrar por separado (casi siempre terminan en logaritmos).</p>
+    </div>
+    <div class="art-banner">
+      <svg viewBox="0 0 500 140" xmlns="http://www.w3.org/2000/svg">
+        <text x="60" y="80" class="big-fraction">7x+8⁄(x+4)(x−6)</text>
+        <path d="M175 70 H240" class="arrow-line"/>
+        <polygon points="240,64 256,70 240,76" class="arrow-head"/>
+        <text x="270" y="60" class="small-fraction">A⁄(x+4)</text>
+        <text x="270" y="100" class="small-fraction">+ B⁄(x−6)</text>
+      </svg>
+    </div>
+
+    <div class="case-cards">
+      <div class="case-card" id="fracciones1">
+        <span class="case-card__num">Caso 1</span>
+        <h3>Factores lineales no repetidos</h3>
+        <p>Cada factor lineal distinto del denominador aporta una fracción simple con un numerador constante por determinar.</p>
+        <div class="formula-card formula-card--small">
+          $$\frac{7x+8}{(x+4)(x-6)} = \frac{A}{x+4}+\frac{B}{x-6}$$
+        </div>
+        <p class="case-card__note">Se multiplica todo por el denominador común y se sustituyen las raíces de cada factor para despejar <span class="math">A</span> y <span class="math">B</span> directamente.</p>
+        <div class="video-wrap video-wrap--small">
+          <iframe src="https://www.youtube.com/embed/Lhb4kRTbh3w" title="Fracciones parciales caso 1" loading="lazy" allowfullscreen></iframe>
+        </div>
+      </div>
+
+      <div class="case-card" id="fracciones2">
+        <span class="case-card__num">Caso 2</span>
+        <h3>Factores lineales repetidos</h3>
+        <p>Si un factor <span class="math">(x-r)</span> se repite <span class="math">k</span> veces, hay que incluir un término por <em>cada potencia</em>, desde 1 hasta <span class="math">k</span>.</p>
+        <div class="formula-card formula-card--small">
+          $$\frac{5x+7}{(x+1)^2(x+2)} = \frac{A}{x+1}+\frac{B}{(x+1)^2}+\frac{C}{x+2}$$
+        </div>
+        <p class="case-card__note">Después de despejar las constantes fáciles por sustitución directa, las restantes se obtienen igualando coeficientes término a término.</p>
+        <div class="video-wrap video-wrap--small">
+          <iframe src="https://www.youtube.com/embed/jTxpr8RFQKo" title="Fracciones parciales caso 2" loading="lazy" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AREA Y VOLUMEN -->
+<section class="topic topic--dark" id="area-volumen">
+  <div class="topic__inner">
+    <p class="eyebrow">Parcial 2 · Aplicaciones geométricas</p>
+    <h2 class="topic__title">Área y volumen</h2>
+    <div class="topic__grid">
+      <div class="topic__text">
+        <p>El área entre dos curvas se obtiene integrando la <strong>diferencia de alturas</strong> — la curva de arriba menos la de abajo — a lo largo del intervalo donde una domina a la otra:</p>
+        <div class="formula-card">
+          $$A = \int_a^b \big[f(x)-g(x)\big]\,dx$$
+        </div>
+        <p>Si esa misma región se hace girar alrededor de un eje, genera un <strong>sólido de revolución</strong>. El <em>método del disco</em> rebana el sólido en discos circulares perpendiculares al eje y suma sus volúmenes:</p>
+        <div class="formula-card formula-card--accent">
+          $$V = \pi \int_a^b \big[f(x)\big]^2\,dx$$
+        </div>
+        <p>Cuando la región no toca el eje de giro, cada rebanada es una <strong>arandela</strong> (un disco con un hueco), y se resta el área del radio interior.</p>
+      </div>
+      <div class="topic__art">
+        <svg viewBox="0 0 380 300" xmlns="http://www.w3.org/2000/svg">
+          <path d="M40 260 Q120 60 260 100" class="curve-thin" fill="none"/>
+          <line x1="40" y1="260" x2="330" y2="260" class="axis-thin"/>
+          <ellipse cx="80" cy="240" rx="10" ry="26" class="revolution-ring"/>
+          <ellipse cx="130" cy="190" rx="10" ry="46" class="revolution-ring"/>
+          <ellipse cx="180" cy="150" rx="10" ry="60" class="revolution-ring"/>
+          <ellipse cx="230" cy="122" rx="10" ry="68" class="revolution-ring"/>
+          <ellipse cx="280" cy="105" rx="10" ry="72" class="revolution-ring revolution-ring--front"/>
+        </svg>
+        <p class="art-caption">Cada disco delgado, apilado, reconstruye el sólido de revolución.</p>
+      </div>
+    </div>
+    <div class="video-block">
+      <div class="video-block__text">
+        <span class="video-block__tag">▸ Video</span>
+        <h4>Volumen por el método de los discos</h4>
+        <p>Cómo plantear la integral cuando la región gira alrededor del eje x.</p>
+      </div>
+      <div class="video-wrap">
+        <iframe src="https://www.youtube.com/embed/HqVsHjxKJmo" title="Volumen de un sólido de revolución" loading="lazy" allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LONGITUD DE CURVA -->
+<section class="topic" id="longitud">
+  <div class="topic__inner">
+    <p class="eyebrow">Parcial 2 · Aplicaciones geométricas</p>
+    <h2 class="topic__title">Longitud de una curva</h2>
+    <div class="topic__grid">
+      <div class="topic__text">
+        <p>Para medir cuánto mide una curva, la aproximamos con segmentos rectos diminutos. Cada segmento es la hipotenusa de un triángulo con catetos <span class="math">dx</span> y <span class="math">dy</span> — puro teorema de Pitágoras, llevado al límite:</p>
+        <div class="formula-card">
+          $$L = \int_a^b \sqrt{1+\left(\frac{dy}{dx}\right)^2}\,dx$$
+        </div>
+        <p>La dificultad casi nunca está en plantear la fórmula, sino en que la raíz resultante suele requerir sustitución trigonométrica u otro método para integrarse.</p>
+        <p class="example-tag">Ejemplo resuelto</p>
+        <div class="formula-card formula-card--accent">
+          $$y=x^{3/2},\ [0,4] \;\Rightarrow\; L=\int_0^4 \sqrt{1+\tfrac{9}{4}x}\,dx = \frac{8}{27}\left[\left(1+\tfrac{9}{4}x\right)^{3/2}\right]_0^4$$
+        </div>
+      </div>
+      <div class="topic__art">
+        <svg viewBox="0 0 380 260" xmlns="http://www.w3.org/2000/svg">
+          <path d="M40 220 Q140 40 340 100" class="curve-thin" fill="none"/>
+          <line x1="150" y1="122" x2="150" y2="163" class="ds-leg"/>
+          <line x1="150" y1="163" x2="205" y2="163" class="ds-leg"/>
+          <line x1="150" y1="122" x2="205" y2="163" class="ds-hyp"/>
+          <text x="128" y="145" class="axis-label small">dy</text>
+          <text x="168" y="180" class="axis-label small">dx</text>
+          <text x="185" y="130" class="axis-label small accent">ds</text>
+        </svg>
+        <p class="art-caption">Cada tramo diminuto de curva ≈ una hipotenusa <span class="math">ds</span>.</p>
+      </div>
+    </div>
+    <div class="video-block">
+      <div class="video-block__text">
+        <span class="video-block__tag">▸ Video</span>
+        <h4>Longitud de una curva, ejercicio resuelto</h4>
+        <p>Planteamiento y resolución completa de una integral de longitud de arco.</p>
+      </div>
+      <div class="video-wrap">
+        <iframe src="https://www.youtube.com/embed/twSWgOL3SVc" title="Longitud de una curva" loading="lazy" allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CINEMATICA -->
+<section class="topic topic--dark" id="cinematica">
+  <div class="topic__inner">
+    <p class="eyebrow">Parcial 2 · Aplicación física</p>
+    <h2 class="topic__title">Cinemática</h2>
+    <div class="topic__grid">
+      <div class="topic__text">
+        <p>La derivada convierte posición en velocidad, y velocidad en aceleración. La integral hace exactamente el camino inverso: si conoces la <strong>aceleración</strong>, integrando una vez recuperas la <strong>velocidad</strong>; integrando otra vez, la <strong>posición</strong>.</p>
+        <div class="formula-card">
+          $$v(t) = v_0 + \int_0^t a(\tau)\,d\tau \qquad\qquad x(t) = x_0 + \int_0^t v(\tau)\,d\tau$$
+        </div>
+        <p>Las constantes de integración no son un detalle menor: son las <strong>condiciones iniciales</strong> del movimiento — dónde y con qué velocidad arrancó el objeto — y sin ellas la respuesta queda incompleta.</p>
+        <p class="example-tag">Ejemplo resuelto</p>
+        <div class="formula-card formula-card--accent">
+          $$a(t)=6t,\ v_0=2 \;\Rightarrow\; v(t)=2+3t^2 \;\Rightarrow\; x(t)=x_0+2t+t^3$$
+        </div>
+      </div>
+      <div class="topic__art">
+        <svg viewBox="0 0 380 280" xmlns="http://www.w3.org/2000/svg">
+          <text x="20" y="25" class="axis-label small">posición</text>
+          <path d="M20 60 Q140 20 340 45" class="curve-thin" fill="none"/>
+          <text x="20" y="115" class="axis-label small">velocidad</text>
+          <line x1="20" y1="150" x2="340" y2="120" class="curve-thin"/>
+          <text x="20" y="205" class="axis-label small">aceleración</text>
+          <line x1="20" y1="235" x2="340" y2="235" class="curve-thin curve-thin--flat"/>
+        </svg>
+        <p class="art-caption">Integrar sube en esta cadena; derivar, baja.</p>
+      </div>
+    </div>
+    <div class="video-block">
+      <div class="video-block__text">
+        <span class="video-block__tag">▸ Video</span>
+        <h4>Posición y velocidad por integración</h4>
+        <p>Cómo recuperar velocidad y posición a partir de la aceleración, con condiciones iniciales.</p>
+      </div>
+      <div class="video-wrap">
+        <iframe src="https://www.youtube.com/embed/eu8htnVgf4k" title="Cinemática por integración" loading="lazy" allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CALCULADORA -->
+<section class="topic topic--calc" id="calculadora">
+  <div class="topic__inner">
+    <p class="eyebrow">Herramienta</p>
+    <h2 class="topic__title">Calculadora de integrales definidas</h2>
+    <p class="calc-intro">Escribe una función de <span class="math">x</span>, define el intervalo <span class="math">[a,b]</span> y el número de particiones. La calculadora aproxima <span class="math">\int_a^b f(x)\,dx</span> con la <strong>regla de Simpson</strong> y dibuja el área sombreada.</p>
+
+    <div class="calc-panel">
+      <form class="calc-form" id="calcForm">
+        <div class="calc-field">
+          <label for="fxInput">f(x) =</label>
+          <input type="text" id="fxInput" value="sin(x) + 2" autocomplete="off" spellcheck="false">
+        </div>
+        <div class="calc-field calc-field--pair">
+          <div>
+            <label for="aInput">a</label>
+            <input type="number" id="aInput" value="0" step="any">
+          </div>
+          <div>
+            <label for="bInput">b</label>
+            <input type="number" id="bInput" value="6.28" step="any">
+          </div>
+        </div>
+        <div class="calc-field">
+          <label for="nInput">Particiones (par)</label>
+          <input type="number" id="nInput" value="100" step="2" min="2">
+        </div>
+        <button type="submit" class="btn btn--primary calc-submit">Calcular integral</button>
+        <p class="calc-hint">Usa <code>x</code> como variable, y funciones como <code>sin, cos, tan, exp, ln, sqrt, abs, pi</code>. Ejemplo: <code>x^2 - 3*x + 1</code></p>
+        <p class="calc-error" id="calcError" role="alert"></p>
+      </form>
+      <div class="calc-result">
+        <canvas id="calcCanvas" width="560" height="340" aria-label="Gráfico de la función con el área bajo la curva sombreada"></canvas>
+        <div class="calc-output">
+          <div class="calc-output__value">
+            <span>Resultado aproximado</span>
+            <strong id="calcResultValue">—</strong>
+          </div>
+          <div class="calc-output__value calc-output__value--muted">
+            <span>Ancho de cada partición (h)</span>
+            <strong id="calcHValue">—</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <p>Hecho con HTML, CSS y JavaScript — sin frameworks, sin librerías de gráficos. Videos incrustados a modo de referencia para profundizar en cada tema.</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
