@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cálculo Integral </title>
+<title>Cálculo Integral · El cuaderno del área bajo la curva</title>
 <meta name="description" content="Curso visual e interactivo de Cálculo Integral: integrales, sustitución, por partes, trigonométricas, fracciones parciales, área y volumen, longitud de curva y cinemática.">
 
 <!-- Fonts -->
@@ -49,9 +49,9 @@
 <!-- HERO -->
 <section class="hero" id="inicio">
   <div class="hero__text">
-    <p class="eyebrow"></p>
-    <h1 class="hero__title">Calculo<br>Integral<span class="dot">.</span></h1>
-    <p class="hero__sub">Cálculo Integral, CI 2026-2027</p>
+    <p class="eyebrow">Calculo</p>
+    <h1 class="hero__title">Integral<br><span class="dot">.</span></h1>
+    <p class="hero__sub">.</p>
     <div class="hero__cta">
       <a href="#riemann" class="btn btn--primary">Empezar por el principio</a>
       <a href="#calculadora" class="btn btn--ghost">Ir a la calculadora</a>
@@ -495,8 +495,8 @@
 <section class="topic topic--calc" id="calculadora">
   <div class="topic__inner">
     <p class="eyebrow">Herramienta</p>
-    <h2 class="topic__title">Calculadora de integrales definidas</h2>
-    <p class="calc-intro">Escribe una función de <span class="math">x</span>, define el intervalo <span class="math">[a,b]</span> y el número de particiones. La calculadora aproxima <span class="math">\int_a^b f(x)\,dx</span> con la <strong>regla de Simpson</strong> y dibuja el área sombreada.</p>
+    <h2 class="topic__title">Calculadora de integrales</h2>
+    <p class="calc-intro">Escribe una función de <span class="math">x</span>, elige si quieres una integral <strong>definida</strong> o <strong>indefinida</strong>, y selecciona el método con el que quieres resolverla. La calculadora intenta encontrar la antiderivada exacta y, para integrales definidas, también la aproxima numéricamente con la <strong>regla de Simpson</strong> como comprobación.</p>
 
     <div class="calc-panel">
       <form class="calc-form" id="calcForm">
@@ -504,7 +504,27 @@
           <label for="fxInput">f(x) =</label>
           <input type="text" id="fxInput" value="sin(x) + 2" autocomplete="off" spellcheck="false">
         </div>
-        <div class="calc-field calc-field--pair">
+
+        <div class="calc-field">
+          <span class="calc-field__label-static">Tipo de integral</span>
+          <div class="pill-group" id="tipoGroup" role="radiogroup" aria-label="Tipo de integral">
+            <button type="button" class="pill pill--active" data-tipo="definida">Definida</button>
+            <button type="button" class="pill" data-tipo="indefinida">Indefinida</button>
+          </div>
+        </div>
+
+        <div class="calc-field">
+          <label for="metodoSelect">Método</label>
+          <select id="metodoSelect">
+            <option value="auto">Automático (probar todos)</option>
+            <option value="sustitucion">Sustitución (cambio de variable)</option>
+            <option value="partes">Por partes</option>
+            <option value="trig">Trigonométrica (identidades)</option>
+            <option value="fracciones">Fracciones parciales</option>
+          </select>
+        </div>
+
+        <div class="calc-field calc-field--pair" id="boundsFields">
           <div>
             <label for="aInput">a</label>
             <input type="number" id="aInput" value="0" step="any">
@@ -514,26 +534,19 @@
             <input type="number" id="bInput" value="6.28" step="any">
           </div>
         </div>
-        <div class="calc-field">
-          <label for="nInput">Particiones (par)</label>
+
+        <div class="calc-field" id="particionesField">
+          <label for="nInput">Particiones (para el cálculo numérico)</label>
           <input type="number" id="nInput" value="100" step="2" min="2">
         </div>
+
         <button type="submit" class="btn btn--primary calc-submit">Calcular integral</button>
-        <p class="calc-hint">Usa <code>x</code> como variable, y funciones como <code>sin, cos, tan, exp, ln, sqrt, abs, pi</code>. Ejemplo: <code>x^2 - 3*x + 1</code></p>
+        <p class="calc-hint">Usa <code>x</code> como variable, y funciones como <code>sin, cos, tan, exp, ln, sqrt, abs, pi</code>. Ejemplos: <code>x^2 - 3*x + 1</code>, <code>x*exp(x)</code>, <code>sin(x)^2</code>, <code>(2*x+3)/((x-2)*(x+3))</code></p>
         <p class="calc-error" id="calcError" role="alert"></p>
       </form>
       <div class="calc-result">
         <canvas id="calcCanvas" width="560" height="340" aria-label="Gráfico de la función con el área bajo la curva sombreada"></canvas>
-        <div class="calc-output">
-          <div class="calc-output__value">
-            <span>Resultado aproximado</span>
-            <strong id="calcResultValue">—</strong>
-          </div>
-          <div class="calc-output__value calc-output__value--muted">
-            <span>Ancho de cada partición (h)</span>
-            <strong id="calcHValue">—</strong>
-          </div>
-        </div>
+        <div class="calc-output" id="calcOutput"></div>
       </div>
     </div>
   </div>
@@ -542,7 +555,7 @@
 </main>
 
 <footer class="footer">
-  <p>Hecho con HTML, CSS y JavaScript — sin frameworks, sin librerías de gráficos. Videos incrustados a modo de referencia para profundizar en cada tema.</p>
+  <p>∫ Cálculo Integral</p>
 </footer>
 
 <script src="script.js"></script>
