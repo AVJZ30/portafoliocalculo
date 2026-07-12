@@ -392,7 +392,49 @@ a{ color:inherit; }
 
 .calc-result{
   background:var(--paper); border-radius:var(--radius-lg); padding:20px; box-shadow:var(--shadow-card);
+  /* Aseguramos que todo texto dentro de calc-result use el color de tinta oscura */
+  color: var(--ink);
 }
+/* Forzamos explícitamente los colores de los elementos que muestran la derivada */
+.calc-output,
+.calc-output__value,
+.calc-antideriv,
+.calc-output__row,
+.calc-output__value strong,
+.calc-output__value span,
+.calc-method-tag,
+.calc-note {
+  color: var(--ink);
+}
+/* Ajuste específico para textos secundarios dentro de la salida */
+.calc-output__value span,
+.calc-output__value--muted strong,
+.calc-note {
+  color: var(--ink-soft);
+}
+/* Asegurar que el bloque de antiderivada (derivada) tenga fondo claro y texto oscuro */
+.calc-antideriv {
+  background: #fbf7ec;
+  border-left: 4px solid var(--amber-deep);
+  border-radius: 10px;
+  padding: 14px 16px;
+  overflow-x: auto;
+  color: var(--ink);
+}
+/* Si hay KaTeX dentro de la salida, forzar color oscuro */
+.calc-output .katex {
+  color: var(--ink) !important;
+}
+/* El canvas de la gráfica no debe tapar ni colapsar */
+#calcCanvas {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  background: #fbf7ec;
+  border-radius: var(--radius-sm);
+  margin-bottom: 16px; /* espacio antes de la derivada */
+}
+
 .calc-output{ margin-top:16px; display:flex; flex-direction:column; gap:14px; }
 .calc-output__value{ display:flex; flex-direction:column; }
 .calc-output__value span{ font-family:var(--font-mono); font-size:12px; text-transform:uppercase; letter-spacing:0.5px; color:var(--ink-soft); }
